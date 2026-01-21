@@ -9,7 +9,7 @@ setup(
     packages=find_packages(exclude=["tests"]),
     python_requires=">=3.8",
     install_requires=[
-        "transaction-classifier-toolkit @ git+https://github.com/silv-mt-holdings/transaction-classifier-toolkit.git",
+        "transaction-classifier-toolkit",
     ],
     extras_require={"dev": ["pytest>=7.0.0"]},
 )
