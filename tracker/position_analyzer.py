@@ -1,7 +1,7 @@
 """
-MCA Position Analyzer
+RBF Position Analyzer
 
-Detects and analyzes MCA positions from classified bank transactions.
+Detects and analyzes RBF positions from classified bank transactions.
 """
 
 from dataclasses import dataclass, field
@@ -11,9 +11,9 @@ from collections import defaultdict
 
 
 @dataclass
-class MCAPosition:
-    """Represents an identified MCA position"""
-    mca_name: str
+class RBFPosition:
+    """Represents an identified RBF position"""
+    rbf_name: str
     aka_name: str
     payment_amount: float = 0.0
     payment_frequency: str = "unknown"
@@ -40,34 +40,34 @@ class StackingAnalysis:
     position_count: int
     total_monthly_obligation: float
     stacking_risk_score: float
-    positions: List[MCAPosition]
+    positions: List[RBFPosition]
 
 
 class PositionTracker:
     """
-    Tracks MCA positions from classified transactions.
+    Tracks RBF positions from classified transactions.
     """
 
-    def find_positions(self, classified_transactions) -> List[MCAPosition]:
+    def find_positions(self, classified_transactions) -> List[RBFPosition]:
         """
-        Identify MCA positions from classified transactions.
+        Identify RBF positions from classified transactions.
 
         Args:
             classified_transactions: List of ClassifiedTransaction objects
 
         Returns:
-            List of MCAPosition objects
+            List of RBFPosition objects
         """
-        # Group by MCA name
-        mca_groups = defaultdict(list)
+        # Group by RBF name
+        rbf_groups = defaultdict(list)
 
         for txn in classified_transactions:
             if txn.mca_match:
-                mca_groups[txn.mca_match].append(txn)
+                rbf_groups[txn.mca_match].append(txn)
 
-        # Analyze each MCA
+        # Analyze each RBF
         positions = []
-        for mca_name, txns in mca_groups.items():
+        for rbf_name, txns in rbf_groups.items():
             if not txns:
                 continue
 
@@ -80,8 +80,8 @@ class PositionTracker:
             frequency = self._detect_frequency(dates)
 
             # Create position
-            position = MCAPosition(
-                mca_name=mca_name,
+            position = RBFPosition(
+                rbf_name=rbf_name,
                 aka_name=txns[0].description[:50],
                 payment_amount=avg_amount,
                 payment_frequency=frequency,
@@ -95,12 +95,12 @@ class PositionTracker:
 
         return positions
 
-    def analyze_stacking(self, positions: List[MCAPosition]) -> StackingAnalysis:
+    def analyze_stacking(self, positions: List[RBFPosition]) -> StackingAnalysis:
         """
         Analyze stacking risk from multiple positions.
 
         Args:
-            positions: List of MCA positions
+            positions: List of RBF positions
 
         Returns:
             StackingAnalysis object
